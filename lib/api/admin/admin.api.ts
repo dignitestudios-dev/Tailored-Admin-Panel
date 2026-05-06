@@ -139,12 +139,14 @@ export async function getDashboardOverviewWithFilters(
     recentCreditPurchases:
       payload.recentPurchases?.map((purchase) => ({
         id: purchase._id,
-        user: {
-          id: purchase.user._id,
-          name: purchase.user.name,
-          email: purchase.user.email,
-          profilePicture: purchase.user.profilePicture,
-        },
+        user: purchase.user
+          ? {
+              id: purchase.user._id,
+              name: purchase.user.name,
+              email: purchase.user.email,
+              profilePicture: purchase.user.profilePicture,
+            }
+          : null,
         platform: purchase.platform,
         planKey: purchase.planKey,
         coinsGranted: purchase.coinsGranted,

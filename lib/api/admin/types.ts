@@ -27,7 +27,7 @@ export interface CreditPurchaseActivity {
     name: string | null;
     email: string;
     profilePicture: string | null;
-  };
+  } | null;
   platform: string;
   planKey: string;
   coinsGranted: number;

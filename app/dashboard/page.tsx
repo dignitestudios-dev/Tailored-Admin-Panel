@@ -353,44 +353,69 @@ export default function DashboardPage() {
                       </div>
                     ))
                   : data.recentCreditPurchases.map((purchase, index) => (
-                      <Link
-                        key={purchase.id}
-                        href={`/dashboard/users?userId=${purchase.user.id}`}
-                        className="block"
-                      >
-                        <div
-                          className={`flex items-center justify-between rounded-xl px-4 py-3 transition hover:brightness-[0.98] ${rowBackgrounds[index % rowBackgrounds.length]}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <ProfileCircle
-                              imageUrl={purchase.user.profilePicture}
-                              label={purchase.user.name ?? purchase.user.email}
-                            />
-                            <div>
-                              <p className="font-medium text-slate-800">
-                                {purchase.user.name ?? "Unnamed User"}
+                      <div key={purchase.id}>
+                        {purchase.user?.id ? (
+                          <Link
+                            href={`/dashboard/users?userId=${purchase.user.id}`}
+                            className="block"
+                          >
+                            <div
+                              className={`flex items-center justify-between rounded-xl px-4 py-3 transition hover:brightness-[0.98] ${rowBackgrounds[index % rowBackgrounds.length]}`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <ProfileCircle
+                                  imageUrl={purchase.user?.profilePicture ?? null}
+                                  label={purchase.user?.name ?? purchase.user?.email ?? "Unknown User"}
+                                />
+                                <div>
+                                  <p className="font-medium text-slate-800">
+                                    {purchase.user?.name ?? "Unknown User"}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {purchase.user?.email ?? "N/A"}
+                                  </p>
+                                  <p className="mt-1 text-xs text-muted-foreground">
+                                    {purchase.platform} • {purchase.planKey}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="text-right">
+                                <p className="bg-gradient-to-r from-[#006838] to-[#00B562] bg-clip-text text-lg font-semibold text-transparent">
+                                  +{purchase.coinsGranted.toLocaleString()}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {dateFormatter.format(new Date(purchase.createdAt))}
+                                </p>
+                              </div>
+                            </div>
+                          </Link>
+                        ) : (
+                          <div
+                            className={`flex items-center justify-between rounded-xl px-4 py-3 ${rowBackgrounds[index % rowBackgrounds.length]}`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <ProfileCircle imageUrl={null} label="Unknown User" />
+                              <div>
+                                <p className="font-medium text-slate-800">Unknown User</p>
+                                <p className="text-xs text-muted-foreground">N/A</p>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                  {purchase.platform} • {purchase.planKey}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="text-right">
+                              <p className="bg-gradient-to-r from-[#006838] to-[#00B562] bg-clip-text text-lg font-semibold text-transparent">
+                                +{purchase.coinsGranted.toLocaleString()}
                               </p>
                               <p className="text-xs text-muted-foreground">
-                                {purchase.user.email}
-                              </p>
-                              <p className="mt-1 text-xs text-muted-foreground">
-                                {purchase.platform} • {purchase.planKey}
+                                {dateFormatter.format(new Date(purchase.createdAt))}
                               </p>
                             </div>
                           </div>
-
-                          <div className="text-right">
-                            <p className="bg-gradient-to-r from-[#006838] to-[#00B562] bg-clip-text text-lg font-semibold text-transparent">
-                              +{purchase.coinsGranted.toLocaleString()}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {dateFormatter.format(
-                                new Date(purchase.createdAt),
-                              )}
-                            </p>
-                          </div>
-                        </div>
-                      </Link>
+                        )}
+                      </div>
                     ))}
               </CardContent>
             </Card>
