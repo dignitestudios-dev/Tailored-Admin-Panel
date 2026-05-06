@@ -64,29 +64,85 @@ export interface DashboardOverview {
   recentCreditPurchases: CreditPurchaseActivity[];
 }
 
-export interface GroupChatReport {
+export type ReportType =
+  | 'chatroom'
+  | 'message'
+  | 'post'
+  | 'comment'
+  | 'user'
+  | 'circle';
+
+export type ReportTargetModel =
+  | 'ChatRoom'
+  | 'Message'
+  | 'Post'
+  | 'Comments'
+  | 'User'
+  | 'Circle';
+
+export type ReportStatus = 'pending' | 'resolve';
+
+export interface ReportQueryParams {
+  status: ReportStatus;
+  page?: number;
+  limit?: number;
+}
+
+export interface AdminReport {
   id: string;
-  groupName: string;
-  reason: string;
+  type: ReportType;
+  targetModel: ReportTargetModel;
   reportedBy: string;
-  date: string;
-  reportCount: number;
+  reported: string;
+  reason: string | null;
+  status: ReportStatus;
+  isBlocked: boolean;
+  isReported: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReportPagination {
+  itemsPerPage: number;
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface ReportListResponse {
+  items: AdminReport[];
+  pagination: ReportPagination;
 }
 
 export interface NotificationPayload {
   title: string;
-  message: string;
-  sendOption: 'immediate' | 'scheduled';
-  scheduledFor?: string;
+  description: string;
 }
 
-export interface NotificationRecord {
+export interface NotificationQueryParams {
+  page?: number;
+  limit?: number;
+}
+
+export interface AdminNotification {
   id: string;
   title: string;
-  message: string;
-  sendOption: 'immediate' | 'scheduled';
-  status: 'sent' | 'scheduled';
+  description: string;
+  isRead: boolean;
+  forAdmin: boolean;
   sentAt: string;
+}
+
+export interface NotificationPagination {
+  itemsPerPage: number;
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface NotificationListResponse {
+  items: AdminNotification[];
+  pagination: NotificationPagination;
 }
 
 export interface AuditLogEntry {

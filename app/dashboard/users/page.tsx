@@ -386,14 +386,26 @@ export default function UsersPage() {
                 {isLoading ? (
                   Array.from({ length: 8 }).map((_, index) => (
                     <TableRow key={`users-skeleton-${index}`}>
-                      <TableCell colSpan={6}>
-                        <div className="flex items-center gap-3 py-1">
+                      <TableCell>
+                        <div className="flex items-center gap-3">
                           <Skeleton className="size-9 rounded-full" />
-                          <div className="space-y-2">
-                            <Skeleton className="h-3 w-24" />
-                            <Skeleton className="h-3 w-48" />
-                          </div>
+                          <Skeleton className="h-4 w-24" />
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-44" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-20" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-8 w-36 rounded-full" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-20" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="ml-auto h-8 w-16 rounded-md" />
                       </TableCell>
                     </TableRow>
                   ))

@@ -60,7 +60,10 @@ export function NavMain({
               {item.items?.length ? (
                 <>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton tooltip={item.title} className="cursor-pointer">
+                    <SidebarMenuButton
+                      tooltip={item.title}
+                      className="cursor-pointer transition-colors hover:bg-gradient-to-r hover:from-[#006838] hover:to-[#00B562] hover:text-white data-[active=true]:bg-gradient-to-r data-[active=true]:from-[#006838] data-[active=true]:to-[#00B562] data-[active=true]:text-white"
+                    >
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -70,7 +73,11 @@ export function NavMain({
                     <SidebarMenuSub>
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild className="cursor-pointer" isActive={pathname === subItem.url}>
+                          <SidebarMenuSubButton
+                            asChild
+                            className="cursor-pointer transition-colors hover:bg-gradient-to-r hover:from-[#006838] hover:to-[#00B562] hover:text-white data-[active=true]:bg-gradient-to-r data-[active=true]:from-[#006838] data-[active=true]:to-[#00B562] data-[active=true]:text-white"
+                            isActive={pathname === subItem.url}
+                          >
                             <Link
                               href={subItem.url}
                               target={(item.title === "Auth Pages" || item.title === "Errors") ? "_blank" : undefined}
@@ -85,7 +92,12 @@ export function NavMain({
                   </CollapsibleContent>
                 </>
               ) : (
-                <SidebarMenuButton asChild tooltip={item.title} className="cursor-pointer" isActive={pathname === item.url}>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={item.title}
+                  className="cursor-pointer transition-colors hover:bg-gradient-to-r hover:from-[#006838] hover:to-[#00B562] hover:text-white data-[active=true]:bg-gradient-to-r data-[active=true]:from-[#006838] data-[active=true]:to-[#00B562] data-[active=true]:text-white"
+                  isActive={pathname === item.url}
+                >
                   <Link href={item.url}>
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>

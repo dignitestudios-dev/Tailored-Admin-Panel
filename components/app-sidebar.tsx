@@ -2,9 +2,7 @@
 
 import * as React from "react";
 import {
-  BarChart3,
   BellRing,
-  ClipboardList,
   LayoutDashboard,
   ShieldAlert,
   Users,
@@ -47,19 +45,14 @@ const data = {
           icon: Users,
         },
         {
-          title: "Group Chat Reports",
+          title: "Reports",
           url: "/dashboard/group-reports",
           icon: ShieldAlert,
         },
         {
-          title: "Push Notifications",
+          title: "Notification",
           url: "/dashboard/push-notifications",
           icon: BellRing,
-        },
-        {
-          title: "Audit Log",
-          url: "/dashboard/audit-log",
-          icon: ClipboardList,
         },
       ],
     },

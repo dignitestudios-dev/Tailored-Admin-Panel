@@ -3,9 +3,11 @@ import type {
   AuditLogEntry,
   DashboardDateRange,
   DashboardOverview,
-  GroupChatReport,
+  NotificationListResponse,
   NotificationPayload,
-  NotificationRecord,
+  NotificationQueryParams,
+  ReportListResponse,
+  ReportQueryParams,
   UserListResponse,
   UserQueryParams,
 } from './types';
@@ -18,44 +20,6 @@ const daysAgo = (days: number) => {
   d.setDate(d.getDate() - days);
   return d.toISOString();
 };
-
-let groupReports: GroupChatReport[] = [
-  {
-    id: 'gr-001',
-    groupName: 'Streetwear Deals',
-    reason: 'Spam and misleading links',
-    reportedBy: 'avakhan',
-    date: daysAgo(1),
-    reportCount: 9,
-  },
-  {
-    id: 'gr-002',
-    groupName: 'Daily Closet Swaps',
-    reason: 'Harassment in chat',
-    reportedBy: 'oliviap',
-    date: daysAgo(4),
-    reportCount: 5,
-  },
-  {
-    id: 'gr-003',
-    groupName: 'Vintage Marketplace',
-    reason: 'Inappropriate content',
-    reportedBy: 'liamg',
-    date: daysAgo(6),
-    reportCount: 3,
-  },
-];
-
-let notificationHistory: NotificationRecord[] = [
-  {
-    id: 'nt-001',
-    title: 'Spring Credits Boost',
-    message: 'Get bonus coins on your next purchase.',
-    sendOption: 'immediate',
-    status: 'sent',
-    sentAt: daysAgo(1),
-  },
-];
 
 let auditLogs: AuditLogEntry[] = [
   {
@@ -318,61 +282,168 @@ export async function updateUserStatus(userId: string, deactivate: boolean) {
   return payload;
 }
 
-export async function getGroupReports(): Promise<GroupChatReport[]> {
-  await delay();
-  return clone(groupReports);
-}
+export async function getReports(params: ReportQueryParams): Promise<ReportListResponse> {
+  type ReportsApiResponse = {
+    success: boolean;
+    message: string;
+    data: Array<{
+      _id: string;
+      targetModel: 'ChatRoom' | 'Message' | 'Post' | 'Comments' | 'User' | 'Circle';
+      type: 'chatroom' | 'message' | 'post' | 'comment' | 'user' | 'circle';
+      reportedBy: string;
+      reported: string;
+      action: 'pending' | 'accept' | 'reject';
+      createdAt: string;
+      updatedAt: string;
+      isBlocked: boolean;
+      isReported: boolean;
+      reason: string | null;
+      status: 'pending' | 'resolve';
+    }>;
+    pagination: {
+      itemsPerPage: number;
+      currentPage: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  };
 
-export async function deleteGroupReport(reportId: string): Promise<void> {
-  await delay();
-  const existingReport = groupReports.find((report) => report.id === reportId);
-  groupReports = groupReports.filter((report) => report.id !== reportId);
+  const response = await API.get<ReportsApiResponse>('/admin/reports', {
+    params: {
+      status: params.status,
+      page: params.page ?? 1,
+      limit: params.limit ?? 10,
+    },
+  });
+  const payload = response.data;
 
-  if (existingReport) {
-    appendAuditLog('Reported group deleted', existingReport.groupName);
+  if (!payload.success) {
+    throw new Error(payload.message || 'Unable to fetch reports.');
   }
+
+  return {
+    items: payload.data.map((report) => ({
+      id: report._id,
+      targetModel: report.targetModel,
+      type: report.type,
+      reportedBy: report.reportedBy,
+      reported: report.reported,
+      reason: report.reason,
+      status: report.status,
+      isBlocked: report.isBlocked,
+      isReported: report.isReported,
+      createdAt: report.createdAt,
+      updatedAt: report.updatedAt,
+    })),
+    pagination: {
+      itemsPerPage: payload.pagination?.itemsPerPage ?? (params.limit ?? 10),
+      currentPage: payload.pagination?.currentPage ?? (params.page ?? 1),
+      totalItems: payload.pagination?.totalItems ?? 0,
+      totalPages: payload.pagination?.totalPages ?? 1,
+    },
+  };
 }
 
-export async function suspendUsersFromReportedGroup(reportId: string): Promise<void> {
-  await delay();
-  const existingReport = groupReports.find((report) => report.id === reportId);
+export async function resolveReport(reportId: string): Promise<{ message: string }> {
+  type ResolveReportApiResponse = {
+    success: boolean;
+    message: string;
+    data?: unknown;
+  };
 
-  if (existingReport) {
-    appendAuditLog('Users suspended from group report', existingReport.groupName);
+  const response = await API.patch<ResolveReportApiResponse>(
+    `/admin/reports/${reportId}/resolve`,
+    {}
+  );
+  const payload = response.data;
+
+  if (!payload.success) {
+    throw new Error(payload.message || 'Unable to resolve report.');
   }
+
+  return { message: payload.message };
 }
 
-export async function getNotificationHistory(): Promise<NotificationRecord[]> {
-  await delay();
-  return clone(notificationHistory);
+export async function getNotifications(
+  params: NotificationQueryParams = {}
+): Promise<NotificationListResponse> {
+  type NotificationsApiResponse = {
+    success: boolean;
+    message: string;
+    data: Array<{
+      _id: string;
+      notificationContent: {
+        _id: string;
+        title: string;
+        description: string;
+      };
+      isRead: boolean;
+      forAdmin: boolean;
+      createdAt: string;
+    }>;
+    pagination: {
+      itemsPerPage: number;
+      currentPage: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  };
+
+  const response = await API.get<NotificationsApiResponse>('/admin/notifications', {
+    params: {
+      page: params.page ?? 1,
+      limit: params.limit ?? 20,
+    },
+  });
+
+  const payload = response.data;
+  if (!payload.success) {
+    throw new Error(payload.message || 'Unable to fetch notifications.');
+  }
+
+  return {
+    items: (payload.data ?? []).map((notification) => ({
+      id: notification._id,
+      title: notification.notificationContent?.title ?? 'Untitled',
+      description: notification.notificationContent?.description ?? '',
+      isRead: notification.isRead,
+      forAdmin: notification.forAdmin,
+      sentAt: notification.createdAt,
+    })),
+    pagination: {
+      itemsPerPage: payload.pagination?.itemsPerPage ?? (params.limit ?? 20),
+      currentPage: payload.pagination?.currentPage ?? (params.page ?? 1),
+      totalItems: payload.pagination?.totalItems ?? 0,
+      totalPages: payload.pagination?.totalPages ?? 1,
+    },
+  };
 }
 
 export async function sendPushNotification(
   payload: NotificationPayload
-): Promise<NotificationRecord> {
-  await delay();
-
-  const isScheduled = payload.sendOption === 'scheduled';
-  const sentAt = isScheduled && payload.scheduledFor
-    ? new Date(payload.scheduledFor).toISOString()
-    : new Date().toISOString();
-
-  const record: NotificationRecord = {
-    id: `nt-${Date.now()}`,
-    title: payload.title,
-    message: payload.message,
-    sendOption: payload.sendOption,
-    status: isScheduled ? 'scheduled' : 'sent',
-    sentAt,
+): Promise<{ message: string }> {
+  type BroadcastApiResponse = {
+    success: boolean;
+    message: string;
+    data: null;
   };
 
-  notificationHistory = [record, ...notificationHistory];
-  appendAuditLog(
-    isScheduled ? 'Push notification scheduled' : 'Push notification sent',
-    payload.title
+  const response = await API.post<BroadcastApiResponse>(
+    '/admin/notifications/broadcast',
+    {
+      title: payload.title,
+      description: payload.description,
+    }
   );
 
-  return clone(record);
+  const responsePayload = response.data;
+  if (!responsePayload.success) {
+    throw new Error(responsePayload.message || 'Unable to broadcast notification.');
+  }
+
+  appendAuditLog('Broadcast notification sent', payload.title);
+
+  return { message: responsePayload.message };
 }
 
 export async function getAuditLogs(): Promise<AuditLogEntry[]> {
