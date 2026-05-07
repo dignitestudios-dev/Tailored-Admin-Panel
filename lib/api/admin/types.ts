@@ -81,19 +81,29 @@ export type ReportTargetModel =
   | 'Circle';
 
 export type ReportStatus = 'pending' | 'resolve';
+export type ReportFilterType = 'user' | 'chatroom';
 
 export interface ReportQueryParams {
+  type: ReportFilterType;
   status: ReportStatus;
   page?: number;
   limit?: number;
+}
+
+export interface ReportParty {
+  id: string;
+  name: string | null;
+  email?: string | null;
+  profilePicture?: string | null;
+  username?: string | null;
 }
 
 export interface AdminReport {
   id: string;
   type: ReportType;
   targetModel: ReportTargetModel;
-  reportedBy: string;
-  reported: string;
+  reportedBy: ReportParty | null;
+  reported: ReportParty | null;
   reason: string | null;
   status: ReportStatus;
   isBlocked: boolean;

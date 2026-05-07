@@ -292,8 +292,20 @@ export async function getReports(params: ReportQueryParams): Promise<ReportListR
       _id: string;
       targetModel: 'ChatRoom' | 'Message' | 'Post' | 'Comments' | 'User' | 'Circle';
       type: 'chatroom' | 'message' | 'post' | 'comment' | 'user' | 'circle';
-      reportedBy: string;
-      reported: string;
+      reportedBy: {
+        _id: string;
+        name: string | null;
+        email?: string;
+        profilePicture?: string | null;
+        username?: string;
+      } | null;
+      reported: {
+        _id: string;
+        name: string | null;
+        email?: string;
+        profilePicture?: string | null;
+        username?: string;
+      } | null;
       action: 'pending' | 'accept' | 'reject';
       createdAt: string;
       updatedAt: string;
@@ -312,6 +324,7 @@ export async function getReports(params: ReportQueryParams): Promise<ReportListR
 
   const response = await API.get<ReportsApiResponse>('/admin/reports', {
     params: {
+      type: params.type,
       status: params.status,
       page: params.page ?? 1,
       limit: params.limit ?? 10,
@@ -328,8 +341,24 @@ export async function getReports(params: ReportQueryParams): Promise<ReportListR
       id: report._id,
       targetModel: report.targetModel,
       type: report.type,
-      reportedBy: report.reportedBy,
-      reported: report.reported,
+      reportedBy: report.reportedBy
+        ? {
+            id: report.reportedBy._id,
+            name: report.reportedBy.name,
+            email: report.reportedBy.email ?? null,
+            profilePicture: report.reportedBy.profilePicture ?? null,
+            username: report.reportedBy.username ?? null,
+          }
+        : null,
+      reported: report.reported
+        ? {
+            id: report.reported._id,
+            name: report.reported.name,
+            email: report.reported.email ?? null,
+            profilePicture: report.reported.profilePicture ?? null,
+            username: report.reported.username ?? null,
+          }
+        : null,
       reason: report.reason,
       status: report.status,
       isBlocked: report.isBlocked,

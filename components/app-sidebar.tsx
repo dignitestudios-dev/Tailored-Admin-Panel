@@ -48,6 +48,16 @@ const data = {
           title: "Reports",
           url: "/dashboard/group-reports",
           icon: ShieldAlert,
+          items: [
+            {
+              title: "User Reports",
+              url: "/dashboard/group-reports",
+            },
+            {
+              title: "Chat Room Reports",
+              url: "/dashboard/group-reports/chat-room",
+            },
+          ],
         },
         {
           title: "Notification",

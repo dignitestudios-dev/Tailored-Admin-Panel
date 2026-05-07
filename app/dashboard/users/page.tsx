@@ -711,6 +711,19 @@ export default function UsersPage() {
                     {dateFormatter.format(new Date(detailUser.createdAt))}
                   </span>
                 </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-medium text-slate-700">Status</span>
+                  <StatusToggle
+                    active={!detailUser.isDeactivatedByAdmin}
+                    loading={updatingUserId === detailUser.id}
+                    onToggle={() =>
+                      void handleToggleStatus(
+                        detailUser.id,
+                        detailUser.isDeactivatedByAdmin,
+                      )
+                    }
+                  />
+                </div>
               </div>
             </div>
           )}
