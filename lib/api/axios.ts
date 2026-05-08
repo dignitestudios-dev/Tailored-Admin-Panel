@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const baseURL = "https://api.dev.ai-tailored.com";
+export const baseURL = "https://api.staging.ai-tailored.com";
 
 const headers = {
   "Content-Type": "application/json",
