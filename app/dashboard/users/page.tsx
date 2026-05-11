@@ -644,24 +644,9 @@ export default function UsersPage() {
                   )}
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <span className="font-medium text-slate-700">Phone</span>
-                  {detailUser.phone ? (
-                    <a
-                      href={`tel:${detailUser.phone}`}
-                      className="text-slate-700 transition hover:text-[#006838] hover:underline"
-                    >
-                      {detailUser.phone}
-                    </a>
-                  ) : (
-                    <span>-</span>
-                  )}
-                </div>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="font-medium text-slate-700">
-                    Country / City
-                  </span>
+                  <span className="font-medium text-slate-700">Location</span>
                   <span>
-                    {detailUser.country ?? "-"} / {detailUser.city ?? "-"}
+                    {detailUser.city ?? ""}, {detailUser.country ?? "-"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
