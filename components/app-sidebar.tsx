@@ -54,7 +54,7 @@ const data = {
               url: "/dashboard/group-reports",
             },
             {
-              title: "Chat Room Reports",
+              title: "Chat Reports",
               url: "/dashboard/group-reports/chat-room",
             },
           ],

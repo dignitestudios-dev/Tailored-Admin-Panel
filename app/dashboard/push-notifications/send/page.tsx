@@ -118,7 +118,7 @@ export default function SendNotificationPage() {
                   setTitle(event.target.value);
                   setFieldErrors((prev) => ({ ...prev, title: undefined }));
                 }}
-                placeholder="Promotion update"
+                placeholder="Enter title here..."
                 maxLength={100}
               />
               {fieldErrors.title ? (
