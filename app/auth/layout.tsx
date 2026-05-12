@@ -13,7 +13,7 @@ export default function RootLayout({
     <PublicRoute>
       <div className="flex h-screen">
         {/* Left side - Form */}
-        <div className="flex-1 flex items-center justify-center p-8">
+        <div className="flex-1 flex items-center justify-center p-8 bg-white">
           {children}
         </div>
         {/* Right side - Brand */}
