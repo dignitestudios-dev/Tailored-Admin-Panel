@@ -352,7 +352,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     ))
-                  : data.recentCreditPurchases.map((purchase, index) => (
+                  : data?.recentCreditPurchases?.map((purchase, index) => (
                       <div key={purchase.id}>
                         {purchase.user?.id ? (
                           <Link
@@ -369,7 +369,7 @@ export default function DashboardPage() {
                                 />
                                 <div>
                                   <p className="font-medium text-slate-800">
-                                    {purchase.user?.name ?? "Unknown User"}
+                                    {purchase.user?.name ?? "Unnamed User"}
                                   </p>
                                   <p className="text-xs text-muted-foreground">
                                     {purchase.user?.email ?? "N/A"}
