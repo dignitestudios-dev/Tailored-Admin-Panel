@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
+  Coins,
   Download,
   Eye,
   RefreshCw,
@@ -377,6 +378,7 @@ export default function UsersPage() {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Username</TableHead>
+                  <TableHead>Coin Balance</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Registered</TableHead>
                   <TableHead className="text-right">Action</TableHead>
@@ -394,6 +396,9 @@ export default function UsersPage() {
                       </TableCell>
                       <TableCell>
                         <Skeleton className="h-4 w-44" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-20" />
                       </TableCell>
                       <TableCell>
                         <Skeleton className="h-4 w-20" />
@@ -441,6 +446,14 @@ export default function UsersPage() {
                         )}
                       </TableCell>
                       <TableCell>
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#006838]/25 bg-gradient-to-r from-[#006838]/10 to-[#00B562]/10 px-2.5 py-1">
+                          <Coins className="size-3.5 shrink-0 text-amber-500" />
+                          <span className="text-xs font-semibold text-[#006838]">
+                            {user.coinBalance.toLocaleString()}
+                          </span>
+                        </span>
+                      </TableCell>
+                      <TableCell>
                         <StatusToggle
                           active={!user.isDeactivatedByAdmin}
                           loading={updatingUserId === user.id}
@@ -469,7 +482,7 @@ export default function UsersPage() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6}>
+                    <TableCell colSpan={7}>
                       <div className="flex flex-col items-center justify-center gap-2 py-14 text-center">
                         <div className="flex size-10 items-center justify-center rounded-full bg-[#eef8f2] text-[#006838]">
                           <SearchX className="size-4" />
@@ -694,6 +707,15 @@ export default function UsersPage() {
                   <span className="font-medium text-slate-700">Registered</span>
                   <span>
                     {dateFormatter.format(new Date(detailUser.createdAt))}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-medium text-slate-700">Coin Balance</span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#006838]/25 bg-gradient-to-r from-[#006838]/10 to-[#00B562]/10 px-2.5 py-1">
+                    <Coins className="size-3.5 shrink-0 text-amber-500" />
+                    <span className="text-xs font-semibold text-[#006838]">
+                      {detailUser.coinBalance.toLocaleString()}
+                    </span>
                   </span>
                 </div>
                 <div className="flex items-center justify-between gap-3">

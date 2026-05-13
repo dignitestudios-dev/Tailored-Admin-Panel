@@ -291,10 +291,13 @@ export default function DashboardPage() {
                             </div>
                           </div>
 
-                          <div className="text-right">
-                            <p className="font-semibold text-[#006838]">
-                              {user.coinBalance.toLocaleString()} coins
-                            </p>
+                          <div className="flex flex-col items-end gap-1">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#006838]/25 bg-gradient-to-r from-[#006838]/10 to-[#00B562]/10 px-2.5 py-1">
+                              <Coins className="size-3.5 shrink-0 text-amber-500" />
+                              <span className="text-sm font-semibold text-[#006838]">
+                                {user.coinBalance.toLocaleString()}
+                              </span>
+                            </span>
                             <p className="text-xs text-muted-foreground">
                               {dateFormatter.format(new Date(user.createdAt))}
                             </p>
